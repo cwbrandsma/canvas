@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Canvas Demo</title>
+    <style>
+        html{font-size:100%;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+        body{margin:10;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:20px;color:#333333;background-color:#ffffff;}
+        body{position:relative;padding-top:10px;background-color:#fff;background-repeat:repeat-x;background-position:0 40px;}
+        article,aside,details,figcaption,figure,footer,header,hgroup,nav,section{display:block;}
+        h1,h2,h3,h4,h5,h6{color:#555;}
+        audio,canvas,video{display:inline-block;*display:inline;*zoom:1;}
+        audio:not([controls]){display:none;}
+        a:focus{outline:thin dotted #333;outline:5px auto -webkit-focus-ring-color;outline-offset:-2px;}
+        a:hover,a:active{outline:0;}
+        sub,sup{position:relative;font-size:75%;line-height:0;vertical-align:baseline;}
+        sup{top:-0.5em;}
+        sub{bottom:-0.25em;}
+        img{max-width:100%;width:auto\9;height:auto;vertical-align:middle;border:0;-ms-interpolation-mode:bicubic;}
+        #map_canvas img,.google-maps img{max-width:none;}
+        button,input,select,textarea{margin:0;font-size:100%;vertical-align:middle;}
+        button,input{*overflow:visible;line-height:normal;}
+        button::-moz-focus-inner,input::-moz-focus-inner{padding:0;border:0;}
+        button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer;}
+        input[type="search"]{-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;-webkit-appearance:textfield;}
+        input[type="search"]::-webkit-search-decoration,input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none;}
+        textarea{overflow:auto;vertical-align:top;-webkit-overflow-scrolling: touch;}
+        .clearfix{*zoom:1;}.clearfix:before,.clearfix:after{display:table;content:"";line-height:0;}
+        .clearfix:after{clear:both;}
+        .hide-text{font:0/0 a;color:transparent;text-shadow:none;background-color:transparent;border:0;}
+        .input-block-level{display:block;width:100%;min-height:30px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}
+        a{color:#0088cc;text-decoration:none;}
+        a:hover{color:#005580;text-decoration:underline;}
+        canvas{border:solid 1px black;background-color: #dabc52;}
+    </style>
+
+</head>
+<body onload="init()">
+    <h1>Canvas Demos</h1>
+    <ul>
+        <li>Related to SVG, in that both can draw on the browser -- like step brothers</li>
+        <li>Pixel based graphics instead of vector</li>
+        <li>Introduced by Apple, resembles Apple's drawing api</li>
+        <li>Also similar to Windows GDI (and GDI.net)</li>
+    </ul>
+
+    <h3>Similarity to SVG</h3>
+    <ul>
+        <li>Can be used to draw on a web page</li>
+        <li>Has its own Javascript api</li>
+    </ul>
+
+    <h3>Differences to SVG</h3>
+    <ul>
+        <li>No Markup Language</li>
+        <li>All drawing via Javascript</li>
+        <li>Javascript does not require namespace</li>
+        <li>No CSS support in Canvas</li>
+        <li>SVG has multiple primative types (like circle)...Canvas is 'Do it yourself'</li>
+    </ul>
+
+    <h3>Getting Started</h3>
+    <h4>HTML</h4>
+<pre>
+&lt;canvas id="canvas1" width="300" height="300"&gt;
+  Sorry you don't support this content
+&lt;/canvas&gt;
+</pre>
+
+    <h4>JavaScript</h4>
+<pre>
+var c1 = document.getElementById('canvas1');
+var ctx = c1.getContext('2d');
+</pre>
+
+    <h2>Demo</h2>
+    <h4>Many demos shamelessly stolen from Mozilla Developer Network <a href="http://developer.mozilla.org">[http://developer.mozilla.org]</a>.</h4>
+
+    <canvas id="canvas1" width="300" height="300">
+        Sorry you don't support this content
+    </canvas>
+
+    <ul>
+        <li><a id="btnRects" href="#">Filled Rectangles</a></li>
+        <li><a id="btnRects2" href="#">Outlined Rectangles</a></li>
+        <li><a id="btnPath" href="#">Draw Path</a></li>
+        <li><a id="btnArcs" href="#">Draw Arcs</a></li>
+        <li><a id="btnImg" href="#">Draw Image</a></li>
+        <li><a id="btnImg2" href="#">Draw On Image</a></li>
+        <li><a id="btnImg3" href="#">Display In Image</a></li>
+
+    </ul>
+
+    <img id="img1" src="" />
+
+<script type="text/javascript">
+
+    function init(){
+        var cnv = document.getElementById("canvas1");
+        var ctx = cnv.getContext("2d");
+
+        var lnk1 = document.getElementById("btnRects");
+        lnk1.onclick = function(evt){
+            evt.preventDefault();
+            fillRect(ctx);
+        };
+        var lnk2 = document.getElementById("btnRects2");
+        lnk2.onclick = function(evt){
+            evt.preventDefault();
+            strokeRect(ctx);
+        };
+        var lnk3 = document.getElementById("btnPath");
+        lnk3.onclick = function(evt){
+            evt.preventDefault();
+            strokePath(ctx);
+        };
+        var lnk4 = document.getElementById("btnArcs");
+        lnk4.onclick = function(evt){
+            evt.preventDefault();
+            drawArcs(ctx);
+        };
+        var lnk5 = document.getElementById("btnImg");
+        lnk5.onclick = function(evt){
+            evt.preventDefault();
+            drawImage(ctx);
+        };
+        var lnk6 = document.getElementById("btnImg2");
+        lnk6.onclick = function(evt){
+            evt.preventDefault();
+            drawOnImage(ctx);
+        };
+        var lnk7 = document.getElementById("btnImg3");
+        lnk7.onclick = function(evt){
+            evt.preventDefault();
+            displayInImage(ctx, cnv);
+        };
+
+    }
+
+
+    function clear(ctx){
+        ctx.clearRect(0,0,300,300);
+    }
+
+    function fillRect(ctx){
+        clear(ctx);
+        ctx.fillStyle = "rgb(200,0,0)";
+        ctx.fillRect (10, 10, 55, 50);
+
+        ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+        ctx.fillRect (30, 30, 55, 50);
+    }
+
+    function strokeRect(ctx){
+        clear(ctx);
+        ctx.strokeRect(20, 20, 50, 50);
+    }
+
+    function strokePath(ctx){
+        clear(ctx);
+        ctx.beginPath();
+        ctx.moveTo(25,25);
+        ctx.lineTo(105,25);
+        ctx.lineTo(25,105);
+        ctx.fill();
+
+        // Stroked triangle
+        ctx.beginPath();
+        ctx.moveTo(125,125);
+        ctx.lineTo(125,45);
+        ctx.lineTo(45,125);
+        ctx.closePath();
+        ctx.stroke();
+    }
+
+    function drawArcs(ctx){
+        for(var i=0;i<4;i++){
+            for(var j=0;j<3;j++){
+                ctx.beginPath();
+                var x              = 25+j*50;               // x coordinate
+                var y              = 25+i*50;               // y coordinate
+                var radius         = 20;                    // Arc radius
+                var startAngle     = 0;                     // Starting point on circle
+                var endAngle       = Math.PI+(Math.PI*j)/2; // End point on circle
+                var anticlockwise  = i%2==0 ? false : true; // clockwise or anticlockwise
+
+                ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+
+                if (i>1){
+                    ctx.fill();
+                } else {
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    function drawImage(ctx){
+        clear(ctx);
+        var image = new Image();
+        image.src = 'images/IMG_0034.JPG';
+
+        image.onload = function() {
+            ctx.drawImage(image, 0, 0, 300, 300);
+        }
+    }
+
+    function drawOnImage(ctx){
+        ctx.fillStyle = "rgba(200, 0, 0, 0.5)";
+        ctx.fillRect (30, 30, 55, 50);
+    }
+
+    function displayInImage(ctx,cnv){
+        var img = document.getElementById("img1");
+        img.style = '';
+        img.src = cnv.toDataURL("image/png");
+    }
+
+
+
+</script>
+</body>
+</html>
