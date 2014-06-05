@@ -32,6 +32,7 @@
         a{color:#0088cc;text-decoration:none;}
         a:hover{color:#005580;text-decoration:underline;}
         canvas{border:solid 1px black;background-color: #dabc52;}
+        .hidden {display:none;}
     </style>
 
 </head>
@@ -87,11 +88,33 @@ var ctx = c1.getContext('2d');
         <li><a id="btnArcs" href="#">Draw Arcs</a></li>
         <li><a id="btnImg" href="#">Draw Image</a></li>
         <li><a id="btnImg2" href="#">Draw On Image</a></li>
+        <li><a id="btnImg5" href="#">Draw Text on Image</a></li>
         <li><a id="btnImg3" href="#">Display In Image</a></li>
-
+        <li><a id="btnImg4" href="#">Open File System Image</a></li>
     </ul>
 
+    <input id="imageFile" type="file" class="hidden" />
+
     <img id="img1" src="" />
+
+
+
+    <h2>Libraries</h2>
+    <ul>
+        <li>Flot.js is an open-source charting library</li>
+        <li>chartjs is an open-source charting library</li>
+        <li>Fabric.js is an open-source canvas library with SVG parsing capabilities</li>
+        <li>Kinetic.js is an open-source canvas library focused on interactivity for desktop and mobile applications</li>
+        <li>Paper.js is an open source vector graphics scripting framework that runs on top of the HTML5 Canvas</li>
+        <li>libCanvas is powerful and lightweight canvas framework</li>
+        <li>Processing.js is a port of the Processing visualization language</li>
+        <li>EaselJS is a library with a Flash-like API</li>
+        <li>PlotKit is a charting and graphing library</li>
+        <li>Rekapi is an animation keyframing API for Canvas</li>
+        <li>PhiloGL is a WebGL framework for data visualization, creative coding and game development.</li>
+        <li>JavaScript InfoVis Toolkit creates interactive 2D Canvas data visualizations for the Web.</li>
+        <li>Frame-Engine is a framework for developping applications and games</li>
+    </ul>
 
 <script type="text/javascript">
 
@@ -129,17 +152,51 @@ var ctx = c1.getContext('2d');
             evt.preventDefault();
             drawOnImage(ctx);
         };
+        var lnk9 = document.getElementById("btnImg5");
+        lnk9.onclick = function(evt){
+            evt.preventDefault();
+            drawTextOnImage(ctx, cnv);
+        };
         var lnk7 = document.getElementById("btnImg3");
         lnk7.onclick = function(evt){
             evt.preventDefault();
             displayInImage(ctx, cnv);
         };
 
+        var lnk8 = document.getElementById("btnImg4");
+        lnk8.onclick = function(evt){
+            evt.preventDefault();
+
+            var fileElem = document.getElementById("imageFile");
+            fileElem.setAttribute("class","");
+            fileElem.onchange = function(e){
+                var file = e.target.files[0];
+                var imgType = /image.*/;
+
+                if (!file.type.match(imgType)) return;
+
+                var reader = new FileReader();
+                reader.onload = fileOnLoad;
+                reader.readAsDataURL(file);
+            };
+        };
+
+        function fileOnLoad(e){
+            clear(ctx);
+            var image = new Image();
+            image.src = e.target.result;
+            image.onload = function(){
+                ctx.drawImage(this,0,0,300,300);
+            };
+        }
     }
 
 
     function clear(ctx){
         ctx.clearRect(0,0,300,300);
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = "#000000";
+        ctx.fillStyle   = "#000000";
     }
 
     function fillRect(ctx){
@@ -162,9 +219,12 @@ var ctx = c1.getContext('2d');
         ctx.moveTo(25,25);
         ctx.lineTo(105,25);
         ctx.lineTo(25,105);
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "#000000";
         ctx.fill();
 
         // Stroked triangle
+        ctx.strokeStyle = "#FF0000";
         ctx.beginPath();
         ctx.moveTo(125,125);
         ctx.lineTo(125,45);
@@ -174,6 +234,7 @@ var ctx = c1.getContext('2d');
     }
 
     function drawArcs(ctx){
+        clear(ctx);
         for(var i=0;i<4;i++){
             for(var j=0;j<3;j++){
                 ctx.beginPath();
@@ -210,12 +271,16 @@ var ctx = c1.getContext('2d');
         ctx.fillRect (30, 30, 55, 50);
     }
 
+    function drawTextOnImage(ctx){
+        ctx.font = "40px Arial";
+        ctx.fillText("This is text", 40, 40);
+    }
+
     function displayInImage(ctx,cnv){
         var img = document.getElementById("img1");
         img.style = '';
         img.src = cnv.toDataURL("image/png");
     }
-
 
 
 </script>
